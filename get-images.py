@@ -18,7 +18,14 @@ while vid_cap.isOpened():
 
     counter += 1
 
-    cv.imwrite( "processed-data/{0}.jpg".format( counter ), frame )
+    frame = cv.cvtColor( frame, cv.COLOR_BGR2GRAY )
+
+    frame = cv.resize( frame, ( 400, 225 ), interpolation = cv.INTER_AREA )
+
+    cv.imshow( "frame", frame )
+    cv.waitKey( 0 )
+
+    #cv.imwrite( "processed-data/{0}.jpg".format( counter ), frame )
 
 vid_cap.release()
 cv.destroyAllWindows()
