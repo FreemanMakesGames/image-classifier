@@ -1,10 +1,12 @@
 import os
 import cv2 as cv
 
-raw_data_dir = "raw-data"
-processed_data_dir = "processed-data"
+project_dir = "/home/insight/Documents/Projects/image-classifier"
+raw_data_dir = os.path.join( project_dir, "raw-data" )
+processed_data_dir = os.path.join( project_dir, "processed-data" )
 
 gap_sec = 20  # Delay in seconds between screenshots.
+img_per_game = 50
 
 def process_images_from_dir( dir_path ):
 
@@ -31,37 +33,70 @@ def process_images_from_dir( dir_path ):
         print( save_dir )
         continue
 
+def get_images_from_game_dir( dir_path, required_count ):
 
-        # Get images from video.
+    save_dir = dir_path.replace( raw_data_dir, processed_data_dir, 1 )
 
-        vid_cap = cv.VideoCapture( os.path.join( raw_data_dir ), "first-person-shooter/csgo/csgo.mp4" )
+    collected_count = 0
+    for entry in os.scandir( dir_path ):
 
-        gap_frames = gap_sec * vid_cap.get( cv.CAP_PROP_FPS )
+        name, ext = os.path.splitext( entry.path )
 
-        counter = 0
-        while vid_cap.isOpened():
+        assert ext == ".mp4"
 
-            vid_cap.set( cv.CAP_PROP_POS_FRAMES, gap_frames * counter )
+        collected_count += get_images_from_video( entry.path, required_count - collected_count )
 
-            ret, frame = vid_cap.read()
+        if collected_count == required_count:
+            return
 
-            if not ret:
-                break
+    if collected_count < required_count:
+        print( f"Only {collected_count} images are collected from {dir_path}" )
 
-            counter += 1
+def get_images_from_video( vid_path, max_count ):
 
-            frame = cv.cvtColor( frame, cv.COLOR_BGR2GRAY )
+    vid_cap = cv.VideoCapture( vid_path )
 
-            frame = cv.resize( frame, ( 400, 225 ), interpolation = cv.INTER_AREA )
+    gap_frames = gap_sec * vid_cap.get( cv.CAP_PROP_FPS )
 
-            cv.imshow( "frame", frame )
-            cv.waitKey( 0 )
+    counter = 0
+    while vid_cap.isOpened():
 
-            #cv.imwrite( "processed-data/{0}.jpg".format( counter ), frame )
+        vid_cap.set( cv.CAP_PROP_POS_FRAMES, gap_frames * counter )
 
-        vid_cap.release()
-        cv.destroyAllWindows()
+        ret, frame = vid_cap.read()
+
+        if not ret:
+            break
+
+        frame = cv.cvtColor( frame, cv.COLOR_BGR2GRAY )
+
+        frame = cv.resize( frame, ( 400, 225 ), interpolation = cv.INTER_AREA )
+
+        #cv.imshow( "frame", frame )
+        #cv.waitKey( 0 ) 
+        cv.imwrite( "processed-data/{0}.jpg".format( counter ), frame )
+
+        counter += 1
+
+        if counter >= max_count:
+            break
+
+    vid_cap.release()
+    cv.destroyAllWindows()
+
+    return counter
 
 
-process_images_from_dir( raw_data_dir )
+# Iterate all genre directories.
+for genre_entry in os.scandir( raw_data_dir ):
+
+    assert genre_entry.is_dir()
+
+    for game_entry in os.scandir( genre_entry.path ):
+
+        # Skip info.json etc.
+        if not game_entry.is_dir():
+            continue
+
+        get_images_from_game_dir( game_entry.path, img_per_game )
 
