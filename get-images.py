@@ -1,4 +1,6 @@
 import os
+import shutil
+import pathlib
 import cv2 as cv
 
 project_dir = "/home/insight/Documents/Projects/image-classifier"
@@ -37,6 +39,10 @@ def get_images_from_game_dir( dir_path, required_count ):
 
     save_dir = dir_path.replace( raw_data_dir, processed_data_dir, 1 )
 
+    if os.path.isdir( save_dir ):
+        shutil.rmtree( save_dir )
+    pathlib.Path( save_dir ).mkdir( parents = True )
+
     collected_count = 0
     for entry in os.scandir( dir_path ):
 
@@ -44,7 +50,7 @@ def get_images_from_game_dir( dir_path, required_count ):
 
         assert ext == ".mp4"
 
-        collected_count += get_images_from_video( entry.path, required_count - collected_count )
+        collected_count += get_images_from_video( entry.path, required_count - collected_count, save_dir )
 
         if collected_count == required_count:
             return
@@ -52,7 +58,7 @@ def get_images_from_game_dir( dir_path, required_count ):
     if collected_count < required_count:
         print( f"Only {collected_count} images are collected from {dir_path}" )
 
-def get_images_from_video( vid_path, max_count ):
+def get_images_from_video( vid_path, max_count, save_dir ):
 
     vid_cap = cv.VideoCapture( vid_path )
 
@@ -73,8 +79,9 @@ def get_images_from_video( vid_path, max_count ):
         frame = cv.resize( frame, ( 400, 225 ), interpolation = cv.INTER_AREA )
 
         #cv.imshow( "frame", frame )
-        #cv.waitKey( 0 ) 
-        cv.imwrite( "processed-data/{0}.jpg".format( counter ), frame )
+        #cv.waitKey( 0 )
+
+        cv.imwrite( os.path.join( save_dir, f"{vid_path.split( '/' )[ -1 ]}_{counter}.jpg" ), frame )
 
         counter += 1
 
