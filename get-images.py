@@ -7,6 +7,7 @@ project_dir = "/home/insight/Documents/Projects/image-classifier"
 raw_data_dir = os.path.join( project_dir, "raw-data" )
 processed_data_dir = os.path.join( project_dir, "processed-data" )
 
+initial_skip_sec = 60  # How much to skip the start of each video.
 gap_sec = 20  # Delay in seconds between screenshots.
 img_per_game = 50
 
@@ -62,12 +63,15 @@ def get_images_from_video( vid_path, max_count, save_dir ):
 
     vid_cap = cv.VideoCapture( vid_path )
 
-    gap_frames = gap_sec * vid_cap.get( cv.CAP_PROP_FPS )
+    fps = vid_cap.get( cv.CAP_PROP_FPS )
+
+    initial_skip_frames = initial_skip_sec * fps
+    gap_frames = gap_sec * fps
 
     counter = 0
     while vid_cap.isOpened():
 
-        vid_cap.set( cv.CAP_PROP_POS_FRAMES, gap_frames * counter )
+        vid_cap.set( cv.CAP_PROP_POS_FRAMES, gap_frames * counter + initial_skip_frames )
 
         ret, frame = vid_cap.read()
 
