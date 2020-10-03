@@ -15,16 +15,12 @@ games_per_genre = 5
 genre_count = 2
 total_img_count = img_per_game * games_per_genre * genre_count
 
-model = cv.ml.LogisticRegression_create()
-model.setLearningRate( 0.001 )
-model.setIterations( 10 )
-model.setTrainMethod( cv.ml.LOGISTIC_REGRESSION_BATCH )
-
 images = []
 labels = []
 
 index_to_genre = {}
 
+print( "Starting to collect data..." )
 for i, genre_entry in enumerate( os.scandir( processed_data_dir ) ):
 
     if not genre_entry.is_dir():
@@ -55,16 +51,23 @@ for i, genre_entry in enumerate( os.scandir( processed_data_dir ) ):
             images.append( img )
             labels.append( i )
 
-# Create train data object.
+# Make collected data into numpy matrix and save it.
 images = np.array( images )
-labels = np.float32( np.array( labels ) )
-#data = cv.ml.TrainData_create( images, cv.ml.ROW_SAMPLE, labels )
+labels = np.float32( np.array( labels ) ).reshape( -1, 1 )
+np.save( "data.npy", np.hstack( ( images, labels ) ) )  # Append the labels as a column to images, then save it.
 
-pprint( labels )
+sys.exit( 0 )
 
-model.train( images, cv.ml.ROW_SAMPLE, labels )
+data = cv.ml.TrainData_create( images, cv.ml.ROW_SAMPLE, labels )
 
-pprint( "Thetas: ", model.get_learnt_thetas() )
+print( "Starting to train the model..." )
+model.train( data )
+
+loss, preds = model.calcError( data, True )
+print( "Loss: ", loss )
+print( "Indices of one's: ", np.where( preds.flatten() == 1 ) )
+
+sys.exit( 0 )
 
 test_img = np.float32( cv.imread( "/home/insight/Documents/Projects/image-classifier/processed-data/third-person-shooter/dead-space/dead-space-0.mp4_0.jpg", cv.IMREAD_GRAYSCALE ) )
 test_img = test_img.flatten() / 255
