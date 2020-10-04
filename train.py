@@ -12,8 +12,8 @@ data = cv.ml.TrainData_create( images, cv.ml.ROW_SAMPLE, labels )
 
 
 model = cv.ml.LogisticRegression_create()
-model.setLearningRate( 0.001 )
-model.setIterations( 50 )
+model.setLearningRate( 1 )
+model.setIterations( 1000 )
 model.setTrainMethod( cv.ml.LOGISTIC_REGRESSION_BATCH )
 
 print( "Starting to train the model..." )
