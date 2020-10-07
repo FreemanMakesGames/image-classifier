@@ -44,36 +44,13 @@ for i, genre_entry in enumerate( os.scandir( processed_data_dir ) ):
                 print( "Warning: A non-jpg under a game dir?" )
                 continue
 
-            # Read and prepare image.
-            img = cv.imread( img_entry.path, cv.IMREAD_GRAYSCALE )
-            img = np.float32( img.flatten() / 255 )
+            img = cv.imread( img_entry.path, cv.IMREAD_GRAYSCALE ).flatten()
 
             images.append( img )
             labels.append( i )
 
 # Make collected data into numpy matrix and save it.
-images = np.array( images )
-labels = np.float32( np.array( labels ) ).reshape( -1, 1 )
+images = np.array( images, dtype = np.uint8 )
+labels = np.array( labels, dtype = np.uint8 ).reshape( -1, 1 )
 np.save( "data.npy", np.hstack( ( images, labels ) ) )  # Append the labels as a column to images, then save it.
-
-sys.exit( 0 )
-
-data = cv.ml.TrainData_create( images, cv.ml.ROW_SAMPLE, labels )
-
-print( "Starting to train the model..." )
-model.train( data )
-
-loss, preds = model.calcError( data, True )
-print( "Loss: ", loss )
-print( "Indices of one's: ", np.where( preds.flatten() == 1 ) )
-
-sys.exit( 0 )
-
-test_img = np.float32( cv.imread( "/home/insight/Documents/Projects/image-classifier/processed-data/third-person-shooter/dead-space/dead-space-0.mp4_0.jpg", cv.IMREAD_GRAYSCALE ) )
-test_img = test_img.flatten() / 255
-test_img = test_img.reshape( 1, -1 )
-
-retval, results = model.predict( test_img )
-print( retval )
-print( results )
 

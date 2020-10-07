@@ -85,7 +85,7 @@ def get_images_from_video( vid_path, max_count, save_dir ):
         #cv.imshow( "frame", frame )
         #cv.waitKey( 0 )
 
-        cv.imwrite( os.path.join( save_dir, f"{vid_path.split( '/' )[ -1 ]}_{counter}.jpg" ), frame )
+        cv.imwrite( os.path.join( save_dir, f"{vid_path.split( '/' )[ -1 ]}-{counter}.jpg" ), frame )
 
         counter += 1
 

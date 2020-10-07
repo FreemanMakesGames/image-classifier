@@ -1,25 +1,49 @@
 import os
 import sys
 import numpy as np
+import json
 from pprint import pprint
+from pprint import pformat
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
+from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import learning_curve
 from sklearn.metrics import accuracy_score
+from sklearn import preprocessing
 
 # Load data from disk, and construct it into a train data object.
 data = np.load( "data.npy" )
 images = data[ :, 0 : -1 ]
 labels = data[ :, -1 ]
 
-pipe = make_pipeline( LogisticRegression( random_state = 0 ) )
+# Preprocessing. This increases accuracy.
+images = preprocessing.scale( images )
+
+pipe = Pipeline( steps = [ ( "logistic", LogisticRegression( max_iter = 300, C = 0.0278, random_state = 0 ) ) ] )
+#params_search = RandomizedSearchCV( pipe, { "logistic__C": np.logspace( -2, 2, 10 ) } )  # Best C is 0.0278, resulting in test acc 0.864.
+
 X_train, X_test, y_train, y_test = train_test_split( images, labels, random_state = 0 )
 
-print( "Training started." )
+train_sizes, train_scores, valid_scores = learning_curve( pipe, X_train, y_train, cv = 5 )
+
+pprint( train_scores )
+pprint( valid_scores )
+
+
+sys.exit( 0 )
+
+
+print( ">>> Training started." )
+#params_search.fit( X_train, y_train )
 pipe.fit( X_train, y_train )
 
-print( "Accuracy score: ", accuracy_score( pipe.predict( X_test ), y_test ) )
+print( "Pipe parameters:\n", pformat( pipe.get_params(), indent = 4 ) )
+#print( "Searched best parameters:\n", pformat( params_search.best_params_, indent = 4 ) )
+print( "Training accuracy: ", accuracy_score( params_search.predict( X_train ), y_train ) )
+print( "Test accuracy: ", accuracy_score( params_search.predict( X_test ), y_test ) )
 
 sys.exit( 0 )
 
