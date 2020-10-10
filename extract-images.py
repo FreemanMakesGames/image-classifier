@@ -9,7 +9,7 @@ processed_data_dir = os.path.join( project_dir, "processed-data" )
 
 initial_skip_sec = 60  # How much to skip the start of each video.
 gap_sec = 20  # Delay in seconds between screenshots.
-img_per_game = 50
+img_per_game = 500
 
 def process_images_from_dir( dir_path ):
 
