@@ -16,18 +16,9 @@ from sklearn.model_selection import learning_curve
 from sklearn.metrics import accuracy_score
 from sklearn import preprocessing
 
-# Load data from disk, and construct it into a train data object.
-data = np.load( "data.npy" )
+from load_data import load_data
 
-# Use less data due to insufficient memory.
-np.random.shuffle( data )
-data = data[ 0 : 3000, : ]
-
-images = data[ :, 0 : -1 ]
-labels = data[ :, -1 ]
-
-# Preprocessing. This increases accuracy.
-images = preprocessing.scale( images )
+images, labels = load_data( "data.npy", 3000 )
 
 pipe = Pipeline( steps = [ ( "logistic", LogisticRegression( max_iter = 3000, C = 0.01, random_state = 0 ) ) ] )
 #params_search = RandomizedSearchCV( pipe, { "logistic__C": np.logspace( -2, 2, 10 ) } )  # Best C is 0.01, resulting in test acc 0.896.
