@@ -141,5 +141,7 @@ cython_debug/
 ### Custom ignores
 raw-data
 processed-data
+unseen-raw-data
+unseen-processed-data
 *.npy
 
