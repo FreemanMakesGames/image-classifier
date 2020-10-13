@@ -4,7 +4,7 @@ import pathlib
 import cv2 as cv
 
 
-def get_images_from_game_dir( dir_path, save_dir, required_count ):
+def get_images_from_game_dir( dir_path, save_dir, required_count, initial_skip_sec, gap_sec ):
 
     if os.path.isdir( save_dir ):
         shutil.rmtree( save_dir )
@@ -17,7 +17,7 @@ def get_images_from_game_dir( dir_path, save_dir, required_count ):
 
         assert ext == ".mp4"
 
-        collected_count += get_images_from_video( entry.path, save_dir, required_count - collected_count )
+        collected_count += get_images_from_video( entry.path, save_dir, required_count - collected_count, initial_skip_sec, gap_sec )
 
         if collected_count == required_count:
             return

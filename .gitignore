@@ -139,9 +139,10 @@ cython_debug/
 
 
 ### Custom ignores
-raw-data
-processed-data
-unseen-raw-data
-unseen-processed-data
+training-videos/
+training-images/
+diff-training-images/
+final-test-videos/
+final-test-images/
 *.npy
 
