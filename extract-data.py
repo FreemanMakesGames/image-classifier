@@ -4,7 +4,7 @@ import cv2 as cv
 import numpy as np
 from pprint import pprint
 
-processed_data_dir = "/home/insight/Documents/Projects/image-classifier/processed-data"
+processed_data_dir = "/home/aware/Projects/image-classifier/processed-data"
 
 img_width = 400
 img_height = 225

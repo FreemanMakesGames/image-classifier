@@ -3,7 +3,7 @@ import shutil
 import pathlib
 import cv2 as cv
 
-project_dir = "/home/insight/Documents/Projects/image-classifier"
+project_dir = "/home/aware/Projects/image-classifier"
 raw_data_dir = os.path.join( project_dir, "raw-data" )
 processed_data_dir = os.path.join( project_dir, "processed-data" )
 
