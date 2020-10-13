@@ -1,0 +1,3 @@
+1. Model performs like a coin-flip on unseen games. Instead of splitting the training and testing data sets between same games, try using one set of games as training, and a different set of games as testing, and then re-train the model?
+2. Try easier genres that are more distinguishable? 
+

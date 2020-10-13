@@ -139,10 +139,5 @@ cython_debug/
 
 
 ### Custom ignores
-training-videos/
-training-images/
-diff-training-images/
-final-test-videos/
-final-test-images/
-*.npy
+data/
 

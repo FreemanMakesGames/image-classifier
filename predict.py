@@ -9,7 +9,9 @@ from sklearn.metrics import accuracy_score
 
 def predict( pipe, img_path ):
 
-    img = np.array( cv.imread( img_path, cv.IMREAD_GRAYSCALE ), dtype = np.uint8 )
+    img = cv.imread( img_path, cv.IMREAD_GRAYSCALE )
+    img = cv.resize( img, ( 400, 225 ), interpolation = cv.INTER_AREA )
+    img = np.array( img, dtype = np.uint8 )
     img = preprocessing.scale( img )
     img = img.reshape( 1, -1 )
 
