@@ -18,6 +18,11 @@ def get_data_from_images( img_dir, save_path ):
             print( "Warning: A non-dir under processed data dir?" )
             continue
 
+########Skip third-person shooters for now#################
+        if genre_entry.name == "third-person-shooter":
+            continue
+###########################################################
+
         genre_name = genre_entry.name
         index_to_genre[ i ] = genre_name
 
