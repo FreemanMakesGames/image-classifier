@@ -15,7 +15,9 @@ def get_images_from_game_dir( dir_path, save_dir, required_count, initial_skip_s
 
         name, ext = os.path.splitext( entry.path )
 
-        assert ext == ".mp4"
+        # Skip vidlist.txt and so on.
+        if ext != ".mp4":
+            continue
 
         collected_count += get_images_from_video( entry.path, save_dir, required_count - collected_count, initial_skip_sec, gap_sec )
 
