@@ -15,13 +15,8 @@ def get_data_from_images( img_dir, save_path ):
     for i, genre_entry in enumerate( os.scandir( img_dir ) ):
 
         if not genre_entry.is_dir():
-            print( "Warning: A non-dir under processed data dir?" )
+            print( "Warning: A non-dir among genre directories?" )
             continue
-
-########Skip third-person shooters for now#################
-        if genre_entry.name == "third-person-shooter":
-            continue
-###########################################################
 
         genre_name = genre_entry.name
         index_to_genre[ i ] = genre_name

@@ -34,7 +34,7 @@ C = args.C
 images, labels = load_data( "data/training/data.npy", X_rows )
 
 pipe = Pipeline( steps = [ ( "logistic", LogisticRegression( max_iter = max_iter, C = C, random_state = 0 ) ) ] )
-params_search = GridSearchCV( pipe, { "logistic__C": np.logspace( -2, 2, 10 ) } )  # C = 0.01 seems okay.
+params_search = GridSearchCV( pipe, { "logistic__C": np.logspace( -3, 1, 10 ) } )  # C = 0.01 seems okay.
 
 if args.search_params:
     estimator = params_search
@@ -54,8 +54,4 @@ print( "New games test accuracy: ", accuracy_score( estimator.predict( X_test_ne
 
 
 joblib.dump( estimator, "estimator.joblib" )
-
-
-# Visualize weights.
-cv.imwrite( "weights.jpg", estimator[ "logistic" ].coef_.reshape( 225, 400 ) * 2550 * 20 )
 
